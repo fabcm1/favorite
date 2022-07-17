@@ -33,10 +33,16 @@ defmodule Favorite.Accounts.User do
   def registration_changeset(user, attrs, opts \\ []) do
     user
     |> cast(attrs, [:login, :password, :email, :name])
-    |> validate_required([:name])
+    |> validate_name()
     |> validate_login()
     |> validate_email()
     |> validate_password(opts)
+  end
+
+  defp validate_name(changeset) do
+    changeset
+    |> validate_required([:name])
+    |> validate_length(:login, max: 50)
   end
 
   defp validate_login(changeset) do
