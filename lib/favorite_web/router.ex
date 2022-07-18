@@ -21,6 +21,7 @@ defmodule FavoriteWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    get "/profiles/:username", PageController, :show
   end
 
   # Other scopes may use custom stacks.

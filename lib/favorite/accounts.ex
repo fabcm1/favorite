@@ -11,6 +11,14 @@ defmodule Favorite.Accounts do
   ## Database getters
 
   @doc """
+  Gets all users.
+
+  """
+  def get_all_users() do
+    Repo.all(User)
+  end
+
+  @doc """
   Gets a user by login.
 
   ## Examples

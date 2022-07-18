@@ -1,7 +1,16 @@
-<section class="phx-hero">
-  <h1><%= gettext "Welcome to %{name}!", name: "Favorite" %></h1>
-  <p>A place to show off your favorite movies</p>
-</section>
+Start looking at other user pages and create a page for yourself!
 
-Start looking at other people pages and then sign up and create one for yourself!
+<hr>
 
+<article class="column">
+  <h4>Users</h4>
+
+<ul class="collection">
+  <%= for user <- @users do %>
+    <li class="collection-item">
+      <%= link user.name, to: Routes.page_path(@conn, :show, user.login)  %>
+    </li>
+  <% end %>
+</ul>
+
+</article>
