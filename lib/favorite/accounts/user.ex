@@ -87,17 +87,19 @@ defmodule Favorite.Accounts.User do
   end
 
   @doc """
-  A user changeset for changing the email.
+  A user changeset for changing the name and email.
 
-  It requires the email to change otherwise an error is added.
+  It requires the name or email to change otherwise an error is added.
   """
-  def email_changeset(user, attrs) do
+  def name_email_changeset(user, attrs) do
     user
-    |> cast(attrs, [:email])
+    |> cast(attrs, [:name, :email])
+    |> validate_name()
     |> validate_email()
     |> case do
       %{changes: %{email: _}} = changeset -> changeset
-      %{} = changeset -> add_error(changeset, :email, "did not change")
+      %{changes: %{name: _}} = changeset -> changeset
+      %{} = changeset -> add_error(changeset, :changes, "nothing changed")
     end
   end
 

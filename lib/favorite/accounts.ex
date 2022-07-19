@@ -104,36 +104,42 @@ defmodule Favorite.Accounts do
   ## Settings
 
   @doc """
-  Returns an `%Ecto.Changeset{}` for changing the user email.
+  Returns an `%Ecto.Changeset{}` for changing the user name and email.
 
   ## Examples
 
-      iex> change_user_email(user)
+      iex> change_user_name_email(user)
       %Ecto.Changeset{data: %User{}}
 
   """
-  def change_user_email(user, attrs \\ %{}) do
-    User.email_changeset(user, attrs)
+  def change_user_name_email(user, attrs \\ %{}) do
+    User.name_email_changeset(user, attrs)
   end
 
   @doc """
-  Emulates that the email will change without actually changing
-  it in the database.
+  Emulates that the name and email will change without actually changing
+  them in the database.
 
   ## Examples
 
-      iex> apply_user_email(user, "valid password", %{email: ...})
+      iex> apply_user_name_email(user, "valid password", %{name: ..., email: ...})
       {:ok, %User{}}
 
-      iex> apply_user_email(user, "invalid password", %{email: ...})
+      iex> apply_user_name_email(user, "invalid password", %{name: ..., email: ...})
       {:error, %Ecto.Changeset{}}
 
   """
-  def apply_user_email(user, password, attrs) do
-    user
-    |> User.email_changeset(attrs)
+  def apply_user_name_email(user, password, attrs) do
+    changeset = user
+    |> User.name_email_changeset(attrs)
     |> User.validate_current_password(password)
-    |> Ecto.Changeset.apply_action(:update)
+
+    %{changes: changes} = changeset
+    
+    case Ecto.Changeset.apply_action(changeset, :update) do
+      {:ok, applied_user} -> {:ok, applied_user, changes}
+      {:error, changeset} -> {:error, changeset}
+    end
   end
 
   @doc """
@@ -157,7 +163,7 @@ defmodule Favorite.Accounts do
   defp user_email_multi(user, email, context) do
     changeset =
       user
-      |> User.email_changeset(%{email: email})
+      |> User.name_email_changeset(%{email: email})
       |> User.confirm_changeset()
 
     Ecto.Multi.new()
@@ -221,6 +227,20 @@ defmodule Favorite.Accounts do
       {:ok, %{user: user}} -> {:ok, user}
       {:error, :user, changeset, _} -> {:error, changeset}
     end
+  end
+
+  @doc """
+  Updates the user name.
+
+  ## Examples
+
+      iex> update_user_name!(user, "new_name")
+      %User{name: "new_name"}
+  """
+  def update_user_name!(user, new_name) do
+    user
+    |> User.name_email_changeset(%{name: new_name})
+    |> Repo.update!
   end
 
   ## Session

@@ -1,26 +1,32 @@
 <h1>Settings</h1>
 
-<h3>Change email</h3>
+<h3>Change name and email</h3>
 
-<.form let={f} for={@email_changeset} action={Routes.user_settings_path(@conn, :update)} id="update_email">
-  <%= if @email_changeset.action do %>
+<.form let={f} for={@name_email_changeset} action={Routes.user_settings_path(@conn, :update)} id="update_name_email">
+  <%= if @name_email_changeset.action do %>
+    <% IO.inspect(@name_email_changeset) %>
     <div class="alert alert-danger">
       <p>Oops, something went wrong! Please check the errors below.</p>
     </div>
   <% end %>
 
-  <%= hidden_input f, :action, name: "action", value: "update_email" %>
+  <%= hidden_input f, :action, name: "action", value: "update_name_email" %>
+  <%= error_tag f, :changes %>
+
+  <%= label f, :name %>
+  <%= text_input f, :name, required: true %>
+  <%= error_tag f, :name %>
 
   <%= label f, :email %>
   <%= email_input f, :email, required: true %>
   <%= error_tag f, :email %>
 
-  <%= label f, :current_password, for: "current_password_for_email" %>
-  <%= password_input f, :current_password, required: true, name: "current_password", id: "current_password_for_email" %>
+  <%= label f, :current_password, for: "current_password_for_name_email" %>
+  <%= password_input f, :current_password, required: true, name: "current_password", id: "current_password_for_name_email" %>
   <%= error_tag f, :current_password %>
 
   <div>
-    <%= submit "Change email" %>
+    <%= submit "Change name and email" %>
   </div>
 </.form>
 

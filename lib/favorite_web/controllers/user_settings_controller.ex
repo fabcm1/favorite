@@ -4,33 +4,49 @@ defmodule FavoriteWeb.UserSettingsController do
   alias Favorite.Accounts
   alias FavoriteWeb.UserAuth
 
-  plug :assign_email_and_password_changesets
+  plug :assign_name_email_and_password_changesets
 
   def edit(conn, _params) do
     render(conn, "edit.html")
   end
 
-  def update(conn, %{"action" => "update_email"} = params) do
+  def update(conn, %{"action" => "update_name_email"} = params) do
     %{"current_password" => password, "user" => user_params} = params
     user = conn.assigns.current_user
 
-    case Accounts.apply_user_email(user, password, user_params) do
-      {:ok, applied_user} ->
+    case Accounts.apply_user_name_email(user, password, user_params) do
+      {:ok, applied_user, changes} ->
+        with name_response <- maybe_change_name(user, changes),
+             email_response <- maybe_deliver_email_instructions(conn, user, applied_user, changes)
+        do conn
+           |> put_flash(:info, name_response <> email_response)
+           |> redirect(to: Routes.user_settings_path(conn, :edit))
+        end
+
+      {:error, changeset} ->
+        render(conn, "edit.html", name_email_changeset: changeset)
+    end
+  end
+
+  defp maybe_change_name(user, changes) do
+    case changes do 
+      %{name: new_name} -> 
+        Accounts.update_user_name!(user, new_name)
+        "Your name has changed. "
+      _ -> ""
+    end 
+  end
+  
+  defp maybe_deliver_email_instructions(conn, user, applied_user, changes) do
+    case changes do 
+      %{email: _} -> 
         Accounts.deliver_update_email_instructions(
           applied_user,
           user.email,
           &Routes.user_settings_url(conn, :confirm_email, &1)
         )
-
-        conn
-        |> put_flash(
-          :info,
-          "A link to confirm your email change has been sent to the new address."
-        )
-        |> redirect(to: Routes.user_settings_path(conn, :edit))
-
-      {:error, changeset} ->
-        render(conn, "edit.html", email_changeset: changeset)
+        "A link to confirm your email change has been sent to the new address."
+      _ -> ""
     end
   end
 
@@ -64,11 +80,11 @@ defmodule FavoriteWeb.UserSettingsController do
     end
   end
 
-  defp assign_email_and_password_changesets(conn, _opts) do
+  defp assign_name_email_and_password_changesets(conn, _opts) do
     user = conn.assigns.current_user
 
     conn
-    |> assign(:email_changeset, Accounts.change_user_email(user))
+    |> assign(:name_email_changeset, Accounts.change_user_name_email(user))
     |> assign(:password_changeset, Accounts.change_user_password(user))
   end
 end
