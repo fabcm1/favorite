@@ -79,6 +79,8 @@ defmodule FavoriteWeb.Router do
     get "/users/settings", UserSettingsController, :edit
     put "/users/settings", UserSettingsController, :update
     get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
+    get "/users/settings/delete", UserSettingsController, :confirm_delete
+    put "/users/settings/delete", UserSettingsController, :delete
   end
 
   scope "/", FavoriteWeb do

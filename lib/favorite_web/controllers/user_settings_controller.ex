@@ -4,7 +4,7 @@ defmodule FavoriteWeb.UserSettingsController do
   alias Favorite.Accounts
   alias FavoriteWeb.UserAuth
 
-  plug :assign_name_email_and_password_changesets
+  plug :assign_name_email_and_password_changesets when action not in [:confirm_delete, :delete]
 
   def edit(conn, _params) do
     render(conn, "edit.html")
@@ -28,6 +28,22 @@ defmodule FavoriteWeb.UserSettingsController do
     end
   end
 
+  def update(conn, %{"action" => "update_password"} = params) do
+    %{"current_password" => password, "user" => user_params} = params
+    user = conn.assigns.current_user
+
+    case Accounts.update_user_password(user, password, user_params) do
+      {:ok, user} ->
+        conn
+        |> put_flash(:info, "Password updated successfully.")
+        |> put_session(:user_return_to, Routes.user_settings_path(conn, :edit))
+        |> UserAuth.log_in_user(user)
+
+      {:error, changeset} ->
+        render(conn, "edit.html", password_changeset: changeset)
+    end
+  end
+  
   defp maybe_change_name(user, changes) do
     case changes do 
       %{name: new_name} -> 
@@ -50,22 +66,6 @@ defmodule FavoriteWeb.UserSettingsController do
     end
   end
 
-  def update(conn, %{"action" => "update_password"} = params) do
-    %{"current_password" => password, "user" => user_params} = params
-    user = conn.assigns.current_user
-
-    case Accounts.update_user_password(user, password, user_params) do
-      {:ok, user} ->
-        conn
-        |> put_flash(:info, "Password updated successfully.")
-        |> put_session(:user_return_to, Routes.user_settings_path(conn, :edit))
-        |> UserAuth.log_in_user(user)
-
-      {:error, changeset} ->
-        render(conn, "edit.html", password_changeset: changeset)
-    end
-  end
-
   def confirm_email(conn, %{"token" => token}) do
     case Accounts.update_user_email(conn.assigns.current_user, token) do
       :ok ->
@@ -79,7 +79,28 @@ defmodule FavoriteWeb.UserSettingsController do
         |> redirect(to: Routes.user_settings_path(conn, :edit))
     end
   end
+  
+  def confirm_delete(conn, _params) do
+    changeset = Accounts.change_user_password(conn.assigns.current_user)
+    render(conn, "confirm_delete.html", changeset: changeset)
+  end
+  
+  def delete(conn, %{"current_password" => password}) do
+    user = conn.assigns.current_user
+  
+    case Accounts.delete_user(user, password) do
+      {:ok, _} ->
+        conn
+        |> put_flash(:info, "Account #{user.name} deleted successfully.")
+        |> redirect(to: "/")
 
+      {:error, changeset} ->        
+        conn
+        |> put_flash(:error, "Something went wrong.")
+        |> render("confirm_delete.html", changeset: changeset)
+    end
+  end
+  
   defp assign_name_email_and_password_changesets(conn, _opts) do
     user = conn.assigns.current_user
 

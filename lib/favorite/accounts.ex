@@ -242,6 +242,20 @@ defmodule Favorite.Accounts do
     |> User.name_email_changeset(%{name: new_name})
     |> Repo.update!
   end
+  
+  def delete_user(user, password) do   
+    changeset = Ecto.Changeset.change(user)
+    |> User.validate_current_password(password)
+      
+    Ecto.Multi.new()
+    |> Ecto.Multi.delete(:user, changeset)
+    |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, :all))
+    |> Repo.transaction  
+    |> case do
+      {:ok, %{user: user}} -> {:ok, user}
+      {:error, :user, changeset, _} -> {:error, changeset}
+    end  
+  end
 
   ## Session
 
