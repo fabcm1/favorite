@@ -2,7 +2,7 @@
 <h4>Attention: this action cannot be undone!</h4>
 
 
-<.form let={f} for={@changeset}, action={Routes.user_settings_path(@conn, :delete)}>
+<.form let={f} for={@changeset}, action={Routes.user_delete_path(@conn, :delete)}>
   <%= label f, :current_password, for: "current_password" %>
   <%= password_input f, :current_password, required: true, name: "current_password" %>
   <%= error_tag f, :current_password %>
