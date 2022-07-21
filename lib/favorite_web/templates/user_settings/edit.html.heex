@@ -1,8 +1,23 @@
 <h1>Settings</h1>
 
+<%= unless @conn.assigns.current_user.confirmed_at do %>
+  <div class="alert alert-warning">
+      <.form let={f} for={:user} action={Routes.user_confirmation_path(@conn, :create)}>
+      Your email is not confirmed!
+      <%= hidden_input f, :login, value: @conn.assigns.current_user.login %>
+
+      <div>
+        <%= submit "Resend confirmation instructions", class: "button-clear" %>
+      </div>
+      </.form>
+  </div>
+<% end %>
+
 <h3>Change name and email</h3>
 
 <.form let={f} for={@name_email_changeset} action={Routes.user_settings_path(@conn, :update)} id="update_name_email">
+  <% IO.inspect(@conn.assigns.current_user) %>
+  
   <%= if @name_email_changeset.action do %>
     <div class="alert alert-danger">
       <p>Oops, something went wrong! Please check the errors below.</p>
