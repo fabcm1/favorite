@@ -7,7 +7,7 @@ defmodule FavoriteWeb.UserConfirmationController do
     conn.assigns.current_user
     |> Accounts.deliver_user_confirmation_instructions(
       &Routes.user_confirmation_url(conn, :edit, &1)
-      )
+    )
 
     conn
     |> put_flash(

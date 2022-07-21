@@ -130,12 +130,13 @@ defmodule Favorite.Accounts do
 
   """
   def apply_user_name_email(user, password, attrs) do
-    changeset = user
-    |> User.name_email_changeset(attrs)
-    |> User.validate_current_password(password)
+    changeset =
+      user
+      |> User.name_email_changeset(attrs)
+      |> User.validate_current_password(password)
 
     %{changes: changes} = changeset
-    
+
     case Ecto.Changeset.apply_action(changeset, :update) do
       {:ok, applied_user} -> {:ok, applied_user, changes}
       {:error, changeset} -> {:error, changeset}
@@ -240,21 +241,22 @@ defmodule Favorite.Accounts do
   def update_user_name!(user, new_name) do
     user
     |> User.name_email_changeset(%{name: new_name})
-    |> Repo.update!
+    |> Repo.update!()
   end
-  
-  def delete_user(user, password) do   
-    changeset = Ecto.Changeset.change(user)
-    |> User.validate_current_password(password)
-      
+
+  def delete_user(user, password) do
+    changeset =
+      Ecto.Changeset.change(user)
+      |> User.validate_current_password(password)
+
     Ecto.Multi.new()
     |> Ecto.Multi.delete(:user, changeset)
     |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, :all))
-    |> Repo.transaction  
+    |> Repo.transaction()
     |> case do
       {:ok, %{user: user}} -> {:ok, user}
       {:error, :user, changeset, _} -> {:error, changeset}
-    end  
+    end
   end
 
   ## Session
