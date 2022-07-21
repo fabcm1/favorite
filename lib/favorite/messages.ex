@@ -9,7 +9,7 @@ defmodule Favorite.Messages do
   alias Favorite.Messages.Scrap
 
   @doc """
-  Returns the list of scraps.
+  Returns the list of scraps of a given user as recipient.
 
   ## Examples
 
@@ -17,8 +17,9 @@ defmodule Favorite.Messages do
       [%Scrap{}, ...]
 
   """
-  def list_scraps do
-    Repo.all(Scrap)
+  def list_scraps_recipient(user) do
+    Repo.preload(user, scraps: [:author])
+    user.scraps
   end
 
   @doc """
