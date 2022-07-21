@@ -72,7 +72,9 @@
 
 <h3>Delete account</h3>
 
-<form action={Routes.user_delete_path(@conn, :confirm_delete)}>
-    <input type="submit" value="Delete" />
-</form>
+<.form let={_f} for={:delete_user} action={Routes.user_delete_path(@conn, :confirm_delete)} method="get">
+  <div>
+    <%= submit "Delete", class: "button-red" %>
+  </div>
+</.form>
 
