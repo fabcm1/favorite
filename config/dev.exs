@@ -2,8 +2,8 @@ import Config
 
 # Configure your database
 config :favorite, Favorite.Repo,
-  username: "fabricio",
-  password: System.get_env("DISCUSS_DATABASE_KEY"),
+  username: System.get_env("POSTGRESQL_USERNAME"),
+  password: System.get_env("POSTGRESQL_DATABASE_KEY"),
   hostname: "localhost",
   database: "favorite_dev",
   stacktrace: true,
