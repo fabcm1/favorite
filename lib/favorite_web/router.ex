@@ -81,14 +81,13 @@ defmodule FavoriteWeb.Router do
     get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
     get "/users/settings/delete", UserSettingsController, :confirm_delete
     put "/users/settings/delete", UserSettingsController, :delete
+    post "/users/settings/confirm", UserConfirmationController, :create
   end
 
   scope "/", FavoriteWeb do
     pipe_through [:browser]
 
     delete "/users/log_out", UserSessionController, :delete
-    get "/users/confirm", UserConfirmationController, :new
-    post "/users/confirm", UserConfirmationController, :create
     get "/users/confirm/:token", UserConfirmationController, :edit
     post "/users/confirm/:token", UserConfirmationController, :update
   end

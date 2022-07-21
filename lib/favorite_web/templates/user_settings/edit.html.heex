@@ -2,10 +2,8 @@
 
 <%= unless @conn.assigns.current_user.confirmed_at do %>
   <div class="alert alert-warning">
-      <.form let={f} for={:user} action={Routes.user_confirmation_path(@conn, :create)}>
+      <.form let={_f} for={:user} action={Routes.user_confirmation_path(@conn, :create)}>
       Your email is not confirmed!
-      <%= hidden_input f, :login, value: @conn.assigns.current_user.login %>
-
       <div>
         <%= submit "Resend confirmation instructions", class: "button-clear" %>
       </div>

@@ -3,25 +3,18 @@ defmodule FavoriteWeb.UserConfirmationController do
 
   alias Favorite.Accounts
 
-  def new(conn, _params) do
-    render(conn, "new.html")
-  end
-
-  def create(conn, %{"user" => %{"login" => login}}) do
-    if user = Accounts.get_user_by_login(login) do
-      Accounts.deliver_user_confirmation_instructions(
-        user,
-        &Routes.user_confirmation_url(conn, :edit, &1)
+  def create(conn, _params) do
+    conn.assigns.current_user
+    |> Accounts.deliver_user_confirmation_instructions(
+      &Routes.user_confirmation_url(conn, :edit, &1)
       )
-    end
 
     conn
     |> put_flash(
       :info,
-      "If your email is in our system and it has not been confirmed yet, " <>
-        "you will receive an email with instructions shortly."
+      "You will receive an email with instructions shortly."
     )
-    |> redirect(to: "/")
+    |> redirect(to: Routes.user_settings_path(conn, :edit))
   end
 
   def edit(conn, %{"token" => token}) do
