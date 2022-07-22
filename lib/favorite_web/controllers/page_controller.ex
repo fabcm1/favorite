@@ -2,12 +2,11 @@ defmodule FavoriteWeb.PageController do
   use FavoriteWeb, :controller
   alias Favorite.{Accounts, Messages}
 
-
   def index(conn, _params) do
     users = Accounts.get_all_users()
     render(conn, "index.html", users: users)
   end
-  
+
   def show(conn, %{"username" => username}) do
     case Accounts.get_user_by_login(username) do
       %Accounts.User{} = user -> 
