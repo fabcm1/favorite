@@ -80,9 +80,10 @@ defmodule FavoriteWeb.Router do
     put "/users/settings", UserSettingsController, :update
     get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
     get "/users/settings/delete", UserDeleteController, :confirm_delete
-    put "/users/settings/delete", UserDeleteController, :delete
+    delete "/users/settings/delete", UserDeleteController, :delete
     post "/users/settings/confirm", UserConfirmationController, :create
     delete "/users/scraps/:id", UserScrapsController, :delete
+    post "/users/scraps", UserScrapsController, :create
   end
 
   scope "/", FavoriteWeb do

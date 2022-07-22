@@ -1,6 +1,21 @@
 <h3><%= @user.name %></h3>
 
 <ul class="collection">
+
+<%= if @conn.assigns.current_user do %>
+  <.form let={f} for={:create_scrap} action={Routes.user_scraps_path(@conn, :create)} method="post">
+   
+    <%= hidden_input f, :recipient, value: @user.login %>
+   
+    <%= label f, :message %>
+    <%= text_input f, :content, required: true %>
+   
+    <div>
+      <%= submit "New comment", class: "button-outline" %>
+    </div>
+  </.form>
+<% end %>
+
   <%= for scrap <- @scraps do %>
     <li class="collection-item">
       <%= scrap.author.name <> " wrote on " <> (scrap.inserted_at |> my_to_string) <> ":" %> 

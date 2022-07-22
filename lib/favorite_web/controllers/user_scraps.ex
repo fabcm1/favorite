@@ -1,7 +1,7 @@
 defmodule FavoriteWeb.UserScrapsController do
   use FavoriteWeb, :controller
 
-  alias Favorite.Messages
+  alias Favorite.{Messages, Accounts}
 
   plug :can_edit  when action in [:delete]
  
@@ -12,6 +12,23 @@ defmodule FavoriteWeb.UserScrapsController do
     conn
     |> put_flash(:info, "Message deleted successfully.")
     |> redirect(to: Routes.page_path(conn, :show, scrap.recipient.login))
+  end
+  
+  def create(conn, %{"create_scrap" => params}) do
+    %{"recipient" => recipient_login, "content" => content} = params
+  
+    if conn.assigns.current_user.confirmed_at do
+      Accounts.get_user_by_login(recipient_login)
+      |> Messages.create_scrap(conn.assigns.current_user, content)  
+      
+      conn
+      |> put_flash(:info, "Message created successfully.")
+      |> redirect(to: Routes.page_path(conn, :show, recipient_login))
+    else
+      conn
+      |> put_flash(:error, "You have to confirm your email before sending a message.")
+      |> redirect(to: Routes.page_path(conn, :show, recipient_login))
+    end
   end
   
   def can_edit(conn, _params) do
