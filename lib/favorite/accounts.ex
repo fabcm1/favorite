@@ -23,10 +23,10 @@ defmodule Favorite.Accounts do
 
   ## Examples
 
-      iex> get_user_by_login("foo@example.com")
+      iex> get_user_by_login("foo")
       %User{}
 
-      iex> get_user_by_login("unknown@example.com")
+      iex> get_user_by_login("unknown")
       nil
 
   """
@@ -39,10 +39,10 @@ defmodule Favorite.Accounts do
 
   ## Examples
 
-      iex> get_user_by_login_and_password("foo@example.com", "correct_password")
+      iex> get_user_by_login_and_password("foo", "correct_password")
       %User{}
 
-      iex> get_user_by_login_and_password("foo@example.com", "invalid_password")
+      iex> get_user_by_login_and_password("foo", "invalid_password")
       nil
 
   """

@@ -18,41 +18,51 @@ defmodule Favorite.Messages do
 
   """
   def list_scraps_recipient(user) do
-    Repo.preload(user, scraps: [:author])
-    user.scraps
+    user
+    |> Repo.preload(scraps: [:author])
+    |> Map.get(:scraps)
   end
 
   @doc """
-  Gets a single scrap.
+  Gets a single scrap with attrs preloaded.
 
-  Raises `Ecto.NoResultsError` if the Scrap does not exist.
+  Returns nil if the Scrap does not exist.
 
   ## Examples
 
-      iex> get_scrap!(123)
+      iex> get_scrap(123)
       %Scrap{}
+      
+      iex> get_scrap(125, [:recipient])
+      %Scrap{recipient: %User{}}
 
-      iex> get_scrap!(456)
-      ** (Ecto.NoResultsError)
+      iex> get_scrap(456)
+      nil
 
   """
-  def get_scrap!(id), do: Repo.get!(Scrap, id)
+  def get_scrap(id, attrs \\ []) do
+    Scrap
+    |> Repo.get(id) 
+    |> Repo.preload(attrs)
+  end
 
   @doc """
   Creates a scrap.
 
   ## Examples
 
-      iex> create_scrap(%{field: value})
+      iex> create_scrap(userA, userB, "Hello there!") 
       {:ok, %Scrap{}}
 
       iex> create_scrap(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_scrap(attrs \\ %{}) do
-    %Scrap{}
-    |> Scrap.changeset(attrs)
+  def create_scrap(recipient, author, content) do
+    recipient 
+    |> Ecto.build_assoc(:scraps)
+    |> Ecto.Changeset.change(content: content)
+    |> Ecto.Changeset.put_assoc(:author, author)
     |> Repo.insert()
   end
 
@@ -79,15 +89,15 @@ defmodule Favorite.Messages do
 
   ## Examples
 
-      iex> delete_scrap(scrap)
-      {:ok, %Scrap{}}
+      iex> delete_scrap!(scrap)
+      scrap
 
-      iex> delete_scrap(scrap)
-      {:error, %Ecto.Changeset{}}
+      iex> delete_scrap!(scrap)
+      ** (Ecto.Error)
 
   """
-  def delete_scrap(%Scrap{} = scrap) do
-    Repo.delete(scrap)
+  def delete_scrap!(%Scrap{} = scrap) do
+    Repo.delete!(scrap)
   end
 
   @doc """

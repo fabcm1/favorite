@@ -82,6 +82,7 @@ defmodule FavoriteWeb.Router do
     get "/users/settings/delete", UserDeleteController, :confirm_delete
     put "/users/settings/delete", UserDeleteController, :delete
     post "/users/settings/confirm", UserConfirmationController, :create
+    delete "/users/scraps/:id", UserScrapsController, :delete
   end
 
   scope "/", FavoriteWeb do

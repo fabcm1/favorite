@@ -1,6 +1,6 @@
 defmodule FavoriteWeb.PageController do
   use FavoriteWeb, :controller
-  alias Favorite.Accounts
+  alias Favorite.{Accounts, Messages}
 
 
   def index(conn, _params) do
@@ -9,7 +9,14 @@ defmodule FavoriteWeb.PageController do
   end
   
   def show(conn, %{"username" => username}) do
-    user = Accounts.get_user_by_login(username)
-    render(conn, "show.html", user: user)
+    case Accounts.get_user_by_login(username) do
+      %Accounts.User{} = user -> 
+        scraps = Messages.list_scraps_recipient(user)
+        render(conn, "show.html", user: user, scraps: scraps)
+      nil ->
+        conn
+        |> put_flash(:error, "User #{username} does not exist.")
+        |> redirect(to: Routes.page_path(conn, :index))
+    end
   end
 end
