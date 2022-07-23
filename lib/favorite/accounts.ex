@@ -15,7 +15,7 @@ defmodule Favorite.Accounts do
 
   """
   def get_all_users() do
-    Repo.all(User)
+    Repo.all(from p in User, where: p.accessible)
   end
 
   @doc """
@@ -244,14 +244,17 @@ defmodule Favorite.Accounts do
     |> Repo.update!()
   end
 
+  defp scraps_as_author_query(user) do
+    from m in Favorite.Messages.Scrap, where: m.author_id == ^user.id
+  end
+
   def delete_user(user, password) do
-    changeset =
-      Ecto.Changeset.change(user)
-      |> User.validate_current_password(password)
+    changeset = User.delete_changeset(user, password)
 
     Ecto.Multi.new()
-    |> Ecto.Multi.delete(:user, changeset)
+    |> Ecto.Multi.update(:user, changeset)
     |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, :all))
+    |> Ecto.Multi.delete_all(:scraps, scraps_as_author_query(user))
     |> Repo.transaction()
     |> case do
       {:ok, %{user: user}} -> {:ok, user}

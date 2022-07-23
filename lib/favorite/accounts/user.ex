@@ -9,6 +9,8 @@ defmodule Favorite.Accounts.User do
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
+    field :accessible, :boolean, default: true
+    field :reason, :string
     has_many :scraps, Favorite.Messages.Scrap, foreign_key: :recipient_id
 
     timestamps()
@@ -156,5 +158,22 @@ defmodule Favorite.Accounts.User do
     else
       add_error(changeset, :current_password, "is not valid")
     end
+  end
+
+  def delete_changeset(user, password) do
+    now = NaiveDateTime.utc_now() |> to_string |> String.replace(" ", "")
+
+    user
+    |> cast(
+      %{
+        login: "erasedAt" <> now,
+        email: "erased@account.com",
+        name: "[account erased]",
+        accessible: false,
+        reason: "user_request"
+      },
+      [:login, :email, :name, :accessible, :reason]
+    )
+    |> validate_current_password(password)
   end
 end

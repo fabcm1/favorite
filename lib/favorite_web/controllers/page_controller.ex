@@ -9,9 +9,10 @@ defmodule FavoriteWeb.PageController do
 
   def show(conn, %{"username" => username}) do
     case Accounts.get_user_by_login(username) do
-      %Accounts.User{} = user -> 
+      %Accounts.User{} = user ->
         scraps = Messages.list_scraps_recipient(user) |> Enum.reverse()
         render(conn, "show.html", user: user, scraps: scraps)
+
       nil ->
         conn
         |> put_flash(:error, "User #{username} does not exist.")

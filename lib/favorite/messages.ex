@@ -42,7 +42,7 @@ defmodule Favorite.Messages do
   """
   def get_scrap(id, attrs \\ []) do
     Scrap
-    |> Repo.get(id) 
+    |> Repo.get(id)
     |> Repo.preload(attrs)
   end
 
@@ -59,7 +59,7 @@ defmodule Favorite.Messages do
 
   """
   def create_scrap(recipient, author, content) do
-    recipient 
+    recipient
     |> Ecto.build_assoc(:scraps)
     |> Ecto.Changeset.change(content: content)
     |> Ecto.Changeset.put_assoc(:author, author)
