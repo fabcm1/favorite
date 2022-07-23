@@ -10,7 +10,7 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
-alias Favorite.{Accounts, Messages}
+alias Favorite.{Accounts, Messages, Movies}
 
 Accounts.register_user(%{
   name: "User A",
@@ -42,3 +42,7 @@ Messages.create_scrap(userA, userB, "Hello!")
 Messages.create_scrap(userA, userB, "there!")
 Messages.create_scrap(userC, userB, "C!")
 Messages.create_scrap(userB, userC, "B!")
+
+Movies.create_movie(%{title: "Le fabuleux destin d'Amélie Poulain", year: 2001, poster_url: "https://media-cache.cinematerial.com/p/500x/voj9yngs/le-fabuleux-destin-damelie-poulain-french-movie-poster.jpg"})
+Movies.create_movie(%{title: "Mother!", year: 2017, poster_url: "https://media-cache.cinematerial.com/p/500x/y3w7dxgr/mother-australian-movie-poster.jpg"})
+Movies.create_movie(%{title: "Fantastic Mr. Fox", year: 2009, poster_url: "https://media-cache.cinematerial.com/p/500x/nyswpzub/fantastic-mr-fox-movie-poster.jpg"})
