@@ -1,6 +1,10 @@
 defmodule FavoriteWeb.PageView do
   use FavoriteWeb, :view
 
+  def display(movie) do
+    movie.title <> "\n(" <> (movie.year |> to_string()) <> ")"
+  end
+
   def my_to_string(date = %NaiveDateTime{}) do
     "#{date.hour}:#{date.minute} #{date.day}/#{date.month}/#{date.year}"
   end

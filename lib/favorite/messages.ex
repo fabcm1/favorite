@@ -13,7 +13,7 @@ defmodule Favorite.Messages do
 
   ## Examples
 
-      iex> list_scraps()
+      iex> list_scraps_recipient()
       [%Scrap{}, ...]
 
   """
@@ -32,7 +32,7 @@ defmodule Favorite.Messages do
 
       iex> get_scrap(123)
       %Scrap{}
-      
+
       iex> get_scrap(125, [:recipient])
       %Scrap{recipient: %User{}}
 
@@ -51,7 +51,7 @@ defmodule Favorite.Messages do
 
   ## Examples
 
-      iex> create_scrap(userA, userB, "Hello there!") 
+      iex> create_scrap(userA, userB, "Hello there!")
       {:ok, %Scrap{}}
 
       iex> create_scrap(%{field: bad_value})

@@ -1,4 +1,19 @@
-<h3><%= @user.name %></h3>
+<h2><%= @user.name %></h2>
+
+<h3> Favorite movies </h3>
+<%= if @conn.assigns.current_user && @conn.assigns.current_user.id == @user.id do %>
+[CREATE A BUTTON HERE]
+<% end %>
+<ul class="horizontal">
+  <%= for movie <- @movies do %>
+    <li class="movie-item">
+     <img src= {movie.poster_url} class="image">
+      <%= text_to_html display(movie) %>
+    </li>
+  <% end %>
+</ul>
+
+<h3> Comments </h3>
 
 <ul class="collection">
 
@@ -7,7 +22,6 @@
    
     <%= hidden_input f, :recipient, value: @user.login %>
    
-    <%= label f, :message %>
     <%= text_input f, :content, required: true %>
    
     <div>

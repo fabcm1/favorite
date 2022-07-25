@@ -43,6 +43,42 @@ Messages.create_scrap(userA, userB, "there!")
 Messages.create_scrap(userC, userB, "C!")
 Messages.create_scrap(userB, userC, "B!")
 
-Movies.create_movie(%{title: "Le fabuleux destin d'Amélie Poulain", year: 2001, poster_url: "https://media-cache.cinematerial.com/p/500x/voj9yngs/le-fabuleux-destin-damelie-poulain-french-movie-poster.jpg"})
-Movies.create_movie(%{title: "Mother!", year: 2017, poster_url: "https://media-cache.cinematerial.com/p/500x/y3w7dxgr/mother-australian-movie-poster.jpg"})
-Movies.create_movie(%{title: "Fantastic Mr. Fox", year: 2009, poster_url: "https://media-cache.cinematerial.com/p/500x/nyswpzub/fantastic-mr-fox-movie-poster.jpg"})
+try do
+  Movies.create_movie(%{
+    title: "Le fabuleux destin d'Amélie Poulain",
+    year: 2001,
+    poster_url:
+      "https://media-cache.cinematerial.com/p/500x/voj9yngs/le-fabuleux-destin-damelie-poulain-french-movie-poster.jpg"
+  })
+rescue
+  Ecto.ConstraintError -> ''
+end
+
+try do
+  Movies.create_movie(%{
+    title: "Mother!",
+    year: 2017,
+    poster_url:
+      "https://media-cache.cinematerial.com/p/500x/y3w7dxgr/mother-australian-movie-poster.jpg"
+  })
+rescue
+  Ecto.ConstraintError -> ''
+end
+
+try do
+  Movies.create_movie(%{
+    title: "Fantastic Mr. Fox",
+    year: 2009,
+    poster_url:
+      "https://media-cache.cinematerial.com/p/500x/nyswpzub/fantastic-mr-fox-movie-poster.jpg"
+  })
+rescue
+  Ecto.ConstraintError -> ''
+end
+
+m1 = Movies.get_movie!(1)
+m2 = Movies.get_movie!(2)
+m3 = Movies.get_movie!(3)
+
+Movies.update_favorite_movies(userA, [m1, m2, m3])
+Movies.update_favorite_movies(userB, [m1])

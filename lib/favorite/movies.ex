@@ -6,7 +6,40 @@ defmodule Favorite.Movies do
   import Ecto.Query, warn: false
   alias Favorite.Repo
 
+  alias Favorite.Accounts.User
   alias Favorite.Movies.Movie
+
+  @doc """
+  Returns the list of movies a user has favorited.
+
+  ## Examples
+
+      iex> get_favorite_movies()
+      [%Movie{}, ...]
+
+  """
+  def get_favorite_movies(%User{} = user) do
+    user
+    |> Repo.preload(:movies)
+    |> Map.get(:movies)
+  end
+
+  @doc """
+  Update the list of movies a user has favorited.
+
+  ## Examples
+
+      iex> update_favorite_movies(%User{} = user, movies)
+      %User{movies: movies}
+
+  """
+  def update_favorite_movies(%User{} = user, movies) do
+    user
+    |> Repo.preload(:movies)
+    |> Ecto.Changeset.change()
+    |> Ecto.Changeset.put_assoc(:movies, movies)
+    |> Repo.update!()
+  end
 
   @doc """
   Returns the list of movies.
