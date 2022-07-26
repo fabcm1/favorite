@@ -51,8 +51,8 @@ defmodule Favorite.Movies do
       [%Movie{}, ...]
 
   """
-  def list_movies do
-    Repo.all(Movie) |> Enum.sort_by(& &1.title)
+  def list_movies(search_term \\ '') do
+    Movie |> Movie.search(search_term) |> Repo.all() |> Enum.sort_by(& &1.title)
   end
 
   @doc """

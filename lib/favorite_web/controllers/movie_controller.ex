@@ -3,8 +3,14 @@ defmodule FavoriteWeb.MovieController do
 
   alias Favorite.Movies
 
-  def index(conn, _params) do
-    movies = Movies.list_movies()
+  def index(conn, params) do
+    search_term =
+      case params do
+        %{"s" => %{"q" => query}} -> query
+        _ -> ''
+      end
+
+    movies = Movies.list_movies(search_term)
     render(conn, "index.html", movies: movies)
   end
 

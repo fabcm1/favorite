@@ -1,5 +1,10 @@
 <h1>Movies</h1>
 
+<.form let={f} for={:s} action={Routes.movie_path(@conn, :index)}, method="get">
+  <%= search_input f, :q %>
+  <%= submit "Search", class: "button-outline" %>
+</.form>
+
 <ul class="horizontal">
   <%= for movie <- @movies do %>
     <li class="movie-item">

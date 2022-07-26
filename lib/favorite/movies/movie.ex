@@ -1,6 +1,7 @@
 defmodule Favorite.Movies.Movie do
   use Ecto.Schema
   import Ecto.Changeset
+  import Ecto.Query, only: [from: 2]
 
   schema "movies" do
     field :poster_url, :string
@@ -29,5 +30,12 @@ defmodule Favorite.Movies.Movie do
     else
       changeset
     end
+  end
+
+  def search(query, term) do
+    wild_term = "%#{term}%"
+
+    from movie in query,
+      where: ilike(movie.title, ^wild_term)
   end
 end
