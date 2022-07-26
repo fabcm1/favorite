@@ -1,0 +1,15 @@
+<h1>Movies</h1>
+
+<ul class="horizontal">
+  <%= for movie <- @movies do %>
+    <li class="movie-item">
+     <img src= {movie.poster_url} class="image">
+      <%= text_to_html display(movie) %>
+    </li>
+  <% end %>
+</ul>
+
+
+<%= if @conn.assigns.current_user do %>
+    <%= link "Insert a new movie", to: Routes.movie_path(@conn, :edit), class: "button button-outline"  %>
+<% end %>

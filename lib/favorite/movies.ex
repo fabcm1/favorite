@@ -8,6 +8,7 @@ defmodule Favorite.Movies do
 
   alias Favorite.Accounts.User
   alias Favorite.Movies.Movie
+  alias Favorite.Movies.MovieUserJoin
 
   @doc """
   Returns the list of movies a user has favorited.
@@ -51,7 +52,7 @@ defmodule Favorite.Movies do
 
   """
   def list_movies do
-    Repo.all(Movie)
+    Repo.all(Movie) |> Enum.sort_by(& &1.title)
   end
 
   @doc """
@@ -86,6 +87,19 @@ defmodule Favorite.Movies do
     %Movie{}
     |> Movie.changeset(attrs)
     |> Repo.insert()
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for creating a movie.
+
+  ## Examples
+
+      iex> change_new_movie()
+      %Ecto.Changeset{data: %Movie{}}
+
+  """
+  def change_new_movie(attrs \\ %{}) do
+    Movie.changeset(%Movie{}, attrs)
   end
 
   @doc """
@@ -133,5 +147,38 @@ defmodule Favorite.Movies do
   """
   def change_movie(%Movie{} = movie, attrs \\ %{}) do
     Movie.changeset(movie, attrs)
+  end
+
+  # Many to many update methods: the following two commented methods
+  # work, (once "on_replace: :delete" is added to both schemas) but
+  # they load the entire association list to make one change.
+  # Instead, it is better to work with the join table directly.
+
+  # def add_favorite_movie!(movie, user) do
+  #   movie = Repo.preload(movie, :users)
+  #   movie
+  #   |> Ecto.Changeset.change()
+  #   |> Ecto.Changeset.put_assoc(:users, [user | movie.users])
+  #   |> Repo.update!()
+  # end
+
+  # def remove_favorite_movie!(movie, user) do
+  #   movie = Repo.preload(movie, :users)
+  #   movie
+  #   |> Ecto.Changeset.change()
+  #   |> Ecto.Changeset.put_assoc(:users, movie.users |> Enum.reject(fn u -> u == user end))
+  #   |> Repo.update!()
+  # end
+
+  def add_favorite_movie!(movie_id, user_id) do
+    %MovieUserJoin{movie_id: movie_id, user_id: user_id}
+    |> Ecto.Changeset.change()
+    |> Repo.insert!(on_conflict: :nothing)
+  end
+
+  def remove_favorite_movie!(movie_id, user_id) do
+    MovieUserJoin
+    |> Repo.get_by(user_id: user_id, movie_id: movie_id)
+    |> Repo.delete!()
   end
 end

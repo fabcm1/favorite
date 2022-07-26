@@ -2,16 +2,28 @@
 
 <h3> Favorite movies </h3>
 <%= if @conn.assigns.current_user && @conn.assigns.current_user.id == @user.id do %>
-[CREATE A BUTTON HERE]
+<.form let={f} for={:add} action={Routes.movie_path(@conn, :add)}, method="put">
+  <%= select(f, :movie_id, Enum.map(@all_movies, fn m -> {m.title <> " (#{m.year})", m.id} end)) %>
+  <%= submit "Add favorite", class: "button-outline" %>
+</.form>
 <% end %>
+
 <ul class="horizontal">
-  <%= for movie <- @movies do %>
+  <%= for movie <- @user_movies do %>
     <li class="movie-item">
      <img src= {movie.poster_url} class="image">
       <%= text_to_html display(movie) %>
+      <%= if @conn.assigns.current_user && @conn.assigns.current_user.id == @user.id do %>
+        <.form let={f} for={:remove} action={Routes.movie_path(@conn, :remove)}, method="put">
+          <%= hidden_input f, :movie_id, value: movie.id %>
+          <%= submit "Remove favorite", class: "button-outline" %>
+        </.form>
+      <% end %>
     </li>
   <% end %>
 </ul>
+
+<br><br>
 
 <h3> Comments </h3>
 

@@ -11,8 +11,15 @@ defmodule FavoriteWeb.PageController do
     case Accounts.get_user_by_login(username) do
       %Accounts.User{} = user ->
         scraps = Messages.list_scraps_recipient(user) |> Enum.reverse()
-        movies = Movies.get_favorite_movies(user)
-        render(conn, "show.html", user: user, scraps: scraps, movies: movies)
+        user_movies = Movies.get_favorite_movies(user)
+        all_movies = Movies.list_movies()
+
+        render(conn, "show.html",
+          user: user,
+          scraps: scraps,
+          user_movies: user_movies,
+          all_movies: all_movies
+        )
 
       nil ->
         conn

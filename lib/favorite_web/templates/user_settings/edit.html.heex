@@ -2,12 +2,9 @@
 
 <%= unless @conn.assigns.current_user.confirmed_at do %>
   <div class="alert alert-warning">
-      <.form let={_f} for={:user} action={Routes.user_confirmation_path(@conn, :create)}>
-      Your email is not confirmed!
-      <div>
-        <%= submit "Resend confirmation instructions", class: "button-clear" %>
-      </div>
-      </.form>
+    Your email is not confirmed!
+    <br>
+    <%= link "Resend confirmation instructions", to: Routes.user_confirmation_path(@conn, :create), method: :post, class: "button button-clear"  %>
   </div>
 <% end %>
 
@@ -71,9 +68,4 @@
 
 <h3>Delete account</h3>
 
-<.form let={_f} for={:delete_user} action={Routes.user_delete_path(@conn, :confirm_delete)} method="get">
-  <div>
-    <%= submit "Delete", class: "button-red" %>
-  </div>
-</.form>
-
+<%= link "Delete", to: Routes.user_delete_path(@conn, :confirm_delete), class: "button button-red"  %>

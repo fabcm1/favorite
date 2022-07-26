@@ -12,6 +12,7 @@ defmodule Favorite.Accounts.User do
     field :accessible, :boolean, default: true
     field :reason, :string
     has_many :scraps, Favorite.Messages.Scrap, foreign_key: :recipient_id
+
     many_to_many :movies, Favorite.Movies.Movie, join_through: "users_movies"
 
     timestamps()

@@ -17,18 +17,6 @@ defmodule FavoriteWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", FavoriteWeb do
-    pipe_through :browser
-
-    get "/", PageController, :index
-    get "/profiles/:username", PageController, :show
-  end
-
-  # Other scopes may use custom stacks.
-  # scope "/api", FavoriteWeb do
-  #   pipe_through :api
-  # end
-
   # Enables LiveDashboard only for development
   #
   # If you want to use the LiveDashboard in production, you should put
@@ -84,13 +72,22 @@ defmodule FavoriteWeb.Router do
     post "/users/settings/confirm", UserConfirmationController, :create
     delete "/users/scraps/:id", UserScrapsController, :delete
     post "/users/scraps", UserScrapsController, :create
+
+    put "/movies/add", MovieController, :add
+    put "/movies/remove", MovieController, :remove
+    get "/movies/new", MovieController, :edit
+    post "/movies", MovieController, :create
+    # get "/movies/:id", MovieController, :show
   end
 
   scope "/", FavoriteWeb do
     pipe_through [:browser]
 
+    get "/", PageController, :index
+    get "/profiles/:username", PageController, :show
     delete "/users/log_out", UserSessionController, :delete
     get "/users/confirm/:token", UserConfirmationController, :edit
     post "/users/confirm/:token", UserConfirmationController, :update
+    get "/movies", MovieController, :index
   end
 end
