@@ -19,6 +19,18 @@ defmodule FavoriteWeb.MovieController do
     render(conn, "edit.html", changeset: changeset)
   end
 
+  def show(conn, %{"id" => movie_id}) do
+    case Movies.get_movie(movie_id, [:users]) do
+      %Movies.Movie{} = movie ->
+        render(conn, "show.html", movie: movie)
+
+      nil ->
+        conn
+        |> put_flash(:error, "Movie not found.")
+        |> redirect(to: Routes.movie_path(conn, :index))
+    end
+  end
+
   def create(conn, %{"movie" => movie_params}) do
     case Movies.create_movie(movie_params) do
       {:ok, _movie} ->
@@ -31,21 +43,21 @@ defmodule FavoriteWeb.MovieController do
     end
   end
 
-  def add(conn, %{"add" => %{"movie_id" => movie_id}}) do
+  def add(conn, %{"add" => %{"movie_id" => movie_id, "redirect_to" => url}}) do
     user = conn.assigns.current_user
 
     Movies.add_favorite_movie!(String.to_integer(movie_id), user.id)
 
     conn
-    |> redirect(to: Routes.page_path(conn, :show, user.login))
+    |> redirect(to: url)
   end
 
-  def remove(conn, %{"remove" => %{"movie_id" => movie_id}}) do
+  def remove(conn, %{"remove" => %{"movie_id" => movie_id, "redirect_to" => url}}) do
     user = conn.assigns.current_user
 
     Movies.remove_favorite_movie!(String.to_integer(movie_id), user.id)
 
     conn
-    |> redirect(to: Routes.page_path(conn, :show, user.login))
+    |> redirect(to: url)
   end
 end

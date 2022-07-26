@@ -164,9 +164,9 @@ for params <- movies_params do
   end
 end
 
-m1 = Movies.get_movie!(1)
-m2 = Movies.get_movie!(2)
-m3 = Movies.get_movie!(3)
+m1 = Movies.get_movie(1)
+m2 = Movies.get_movie(2)
+m3 = Movies.get_movie(3)
 
 Movies.update_favorite_movies(userA, [m1, m2, m3])
 Movies.update_favorite_movies(userB, [m1])

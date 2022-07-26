@@ -23,6 +23,7 @@ defmodule Favorite.Movies do
     user
     |> Repo.preload(:movies)
     |> Map.get(:movies)
+    |> Enum.sort_by(& &1.title)
   end
 
   @doc """
@@ -62,14 +63,22 @@ defmodule Favorite.Movies do
 
   ## Examples
 
-      iex> get_movie!(123)
+      iex> get_movie(123)
       %Movie{}
 
-      iex> get_movie!(456)
-      ** (Ecto.NoResultsError)
+      iex> get_movie(456)
+      nil
 
   """
-  def get_movie!(id), do: Repo.get!(Movie, id)
+  def get_movie(id, params \\ []) do
+    case Repo.get(Movie, id) do
+      %Movie{} = movie ->
+        movie |> Repo.preload(params)
+
+      nil ->
+        nil
+    end
+  end
 
   @doc """
   Creates a movie.
@@ -177,8 +186,12 @@ defmodule Favorite.Movies do
   end
 
   def remove_favorite_movie!(movie_id, user_id) do
-    MovieUserJoin
-    |> Repo.get_by(user_id: user_id, movie_id: movie_id)
-    |> Repo.delete!()
+    case Repo.get_by(MovieUserJoin, user_id: user_id, movie_id: movie_id) do
+      %MovieUserJoin{} = movieuser ->
+        Repo.delete!(movieuser)
+
+      nil ->
+        nil
+    end
   end
 end

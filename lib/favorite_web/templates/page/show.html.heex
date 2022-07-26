@@ -4,6 +4,7 @@
 <%= if @conn.assigns.current_user && @conn.assigns.current_user.id == @user.id do %>
 <.form let={f} for={:add} action={Routes.movie_path(@conn, :add)}, method="put">
   <%= select(f, :movie_id, Enum.map(@all_movies, fn m -> {m.title <> " (#{m.year})", m.id} end)) %>
+  <%= hidden_input f, :redirect_to, value: Routes.page_path(@conn, :show, @user.login) %>
   <%= submit "Add favorite", class: "button-outline" %>
 </.form>
 <% end %>
@@ -16,6 +17,7 @@
       <%= if @conn.assigns.current_user && @conn.assigns.current_user.id == @user.id do %>
         <.form let={f} for={:remove} action={Routes.movie_path(@conn, :remove)}, method="put">
           <%= hidden_input f, :movie_id, value: movie.id %>
+          <%= hidden_input f, :redirect_to, value: Routes.page_path(@conn, :show, @user.login) %>
           <%= submit "Remove favorite", class: "button-outline" %>
         </.form>
       <% end %>

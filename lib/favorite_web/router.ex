@@ -89,5 +89,6 @@ defmodule FavoriteWeb.Router do
     get "/users/confirm/:token", UserConfirmationController, :edit
     post "/users/confirm/:token", UserConfirmationController, :update
     get "/movies", MovieController, :index
+    get "/movies/:id", MovieController, :show
   end
 end

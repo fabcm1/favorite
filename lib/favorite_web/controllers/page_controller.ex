@@ -12,7 +12,7 @@ defmodule FavoriteWeb.PageController do
       %Accounts.User{} = user ->
         scraps = Messages.list_scraps_recipient(user) |> Enum.reverse()
         user_movies = Movies.get_favorite_movies(user)
-        all_movies = Movies.list_movies()
+        all_movies = Movies.list_movies('')
 
         render(conn, "show.html",
           user: user,

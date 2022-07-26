@@ -1,0 +1,33 @@
+<h2><%= @movie.title <> " (#{@movie.year})" %></h2>
+
+<img src= {@movie.poster_url} class="image">
+
+<hr>
+
+<%= if @conn.assigns.current_user do %>
+   <%= if Enum.any?(@movie.users, fn user -> user.id == @conn.assigns.current_user.id end) do %>
+        <.form let={f} for={:remove} action={Routes.movie_path(@conn, :remove)}, method="put">
+            <%= hidden_input  f, :movie_id, value: @movie.id %>
+            <%= hidden_input f, :redirect_to, value: Routes.movie_path(@conn, :show, @movie.id) %>
+            <%= submit "Remove favorite", class: "button-outline" %>
+        </.form>
+    <%= else %>
+            <.form let={f} for={:add} action={Routes.movie_path(@conn, :add)}, method="put">
+            <%= hidden_input  f, :movie_id, value: @movie.id %>
+            <%= hidden_input f, :redirect_to, value: Routes.movie_path(@conn, :show, @movie.id) %>
+            <%= submit "Add favorite", class: "button-outline" %>
+        </.form>
+    <% end %>        
+<% end %>
+
+<%= unless Enum.empty?(@movie.users) do %>
+    <h4>Users who favorite it:</h4>
+
+    <ul class="horizontal">
+    <%= for user <- @movie.users do %>
+        <li>
+        <%= link user.name, to: Routes.page_path(@conn, :show, user.login)  %>
+        </li>
+    <% end %>
+    </ul>
+<% end %>

@@ -9,7 +9,7 @@
   <%= for movie <- @movies do %>
     <li class="movie-item">
      <img src= {movie.poster_url} class="image">
-      <%= text_to_html display(movie) %>
+      <%= link display(movie), to: Routes.movie_path(@conn, :show, movie.id) %>
     </li>
   <% end %>
 </ul>
