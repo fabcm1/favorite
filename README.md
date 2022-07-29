@@ -25,6 +25,11 @@ $ mix ecto.migrate
 ```
 A lot of things can go wrong at this step, check [the guide for mix ecto.create](https://hexdocs.pm/phoenix/mix_tasks.html#ecto-specific-mix-tasks) for general troubleshooting.
 
+Insert the first few users, messages, and movies in the database
+```console
+$ mix run priv/repo/seeds.exs
+```
+
 That is all! Run the application with
 ```console
 $ mix phx.server
