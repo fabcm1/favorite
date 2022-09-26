@@ -4,11 +4,16 @@ defmodule Favorite.AccountsFixtures do
   entities via the `Favorite.Accounts` context.
   """
 
-  def unique_user_email, do: "user#{System.unique_integer()}@example.com"
+  @unique_id System.unique_integer()
+
+  def unique_user_email, do: "user#{@unique_id}@example.com"
+  def unique_user_login, do: "user#{@unique_id}"
   def valid_user_password, do: "hello world!"
 
   def valid_user_attributes(attrs \\ %{}) do
     Enum.into(attrs, %{
+      name: "TEST_USER",
+      login: unique_user_login(),
       email: unique_user_email(),
       password: valid_user_password()
     })

@@ -11,7 +11,7 @@
             <%= hidden_input f, :redirect_to, value: Routes.movie_path(@conn, :show, @movie.id) %>
             <%= submit "Remove favorite", class: "button-outline" %>
         </.form>
-    <%= else %>
+    <% else %>
             <.form let={f} for={:add} action={Routes.movie_path(@conn, :add)}, method="put">
             <%= hidden_input  f, :movie_id, value: @movie.id %>
             <%= hidden_input f, :redirect_to, value: Routes.movie_path(@conn, :show, @movie.id) %>

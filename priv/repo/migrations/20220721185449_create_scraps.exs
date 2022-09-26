@@ -10,6 +10,6 @@ defmodule Favorite.Repo.Migrations.CreateScraps do
       timestamps()
     end
 
-    create index(:scraps, [:recipient_id])
+    create unique_index(:scraps, [:recipient_id])
   end
 end
